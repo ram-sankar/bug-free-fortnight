@@ -3,6 +3,7 @@
     "name": "github-oauth",
     "slug": "github-oauth",
     "version": "1.0.0",
+    "scheme": "gitauth",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
