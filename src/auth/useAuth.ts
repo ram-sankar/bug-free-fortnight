@@ -14,6 +14,7 @@ const useAuth = () => {
   const logOut = () => {
     setUser(null);
     authStorage.removeToken();
+    authStorage.removeUser();
   }
 
   return { user, logIn, logOut };

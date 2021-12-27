@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { useAuthRequest } from 'expo-auth-session';
-import { Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Config from "react-native-config";
 import Axios, {AxiosError} from 'axios';
 
@@ -10,6 +10,8 @@ import { useEffect } from 'react';
 import HTTP from '../api/httpClient';
 import useAuth from './../auth/useAuth';
 import { UserDetails } from './../common/model/user';
+import AppButton from '../components/Button';
+import { colors, fonts, sizes } from '../common/theme';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -75,12 +77,32 @@ export default function Login() {
   }
 
   return (
-    <Button
-      disabled={!request}
-      title="Login"
-      onPress={() => {
-        promptAsync();
-        }}
-    />
+      <View style={styles.container}>
+        <Text style={styles.loginText}>Login to Application using </Text>
+        <Text style={styles.githubText}>Github OAuth Authentication</Text>
+        <AppButton 
+          disable={!request}
+          title="Github Login"
+          onPress={()=>{promptAsync()}} 
+        />
+      </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%'
+  },
+  loginText: {
+    fontWeight: '700',
+    fontSize: sizes.fontL,
+    color: colors.primary
+  },
+  githubText: {
+    fontWeight: '700',
+    fontSize: sizes.fontL,
+    color: colors.black
+  }
+});
