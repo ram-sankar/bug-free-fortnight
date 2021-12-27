@@ -3,7 +3,7 @@ import Axios from 'axios';
 Axios.defaults.baseURL = "https://api.github.com"
 
 function setToken(token: string) {
-  Axios.defaults.headers.common["x-auth-token"] = token
+  Axios.defaults.headers.common["Authorization"] = token
 }
 
 export default {

@@ -28,26 +28,12 @@ export default function Home2() {
     discovery
   );
 
-  useEffect(()=>{
-    getUserDetails();
-  },[])
-
   useEffect(() => {
     if (response?.type === 'success') {
       const { code } = response.params;
       getAccessToken(code);
     }
   }, [response]);
-
-  const getUserDetails = async () => {
-    try {
-      const res = await HTTP.get('/user');
-      console.log(res.data);
-    } catch (e) {
-      const error = e as AxiosError;
-      console.log(error.message);
-    }
-  }
 
   const getAccessToken = async (code: string) => {
     try {
@@ -64,13 +50,11 @@ export default function Home2() {
       })
       if (response.data?.access_token) {
         await Auth.storeToken(response.data?.token_type + ' ' + response.data?.access_token);
-        getUserDetails();
       }
     } catch (e) {
       const error = e as AxiosError;
       console.log(error.message);
     }
-    
   }
 
   return (
