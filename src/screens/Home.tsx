@@ -3,8 +3,9 @@ import * as WebBrowser from 'expo-web-browser';
 import { useAuthRequest } from 'expo-auth-session';
 import { Button } from 'react-native';
 import Config from "react-native-config";
-import Axios from 'axios';
+import Axios, {AxiosError} from 'axios';
 
+import HTTP from '../api/httpClient';
 import Auth from "../auth/storage"
 import { useEffect } from 'react';
 
@@ -16,20 +17,7 @@ const discovery = {
   revocationEndpoint: 'https://github.com/settings/connections/applications/<CLIENT_ID>',
 };
 
-
 export default function Home2() {
-  useEffect(()=>{
-    fun();
-  })
-  const fun = async () => {
-    Axios.defaults.headers.common["Authorization"] = await Auth.getToken() || '';
-    try {
-      const res = await Axios.get('https://api.github.com/user');
-      console.log('a', res.data);
-    } catch (e: any) {
-      console.log(e.response);
-    }
-  }
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: process.env.CLIENT_ID || '',
@@ -40,33 +28,50 @@ export default function Home2() {
     discovery
   );
 
+  useEffect(()=>{
+    getUserDetails();
+  },[])
+
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { code } = response.params;
+      getAccessToken(code);
+    }
+  }, [response]);
+
+  const getUserDetails = async () => {
+    try {
+      const res = await HTTP.get('/user');
+      console.log(res.data);
+    } catch (e) {
+      const error = e as AxiosError;
+      console.log(error.message);
+    }
+  }
+
   const getAccessToken = async (code: string) => {
-    const response = await Axios.post(discovery.tokenEndpoint, {},
-      {
+    try {
+      const response = await Axios.post(discovery.tokenEndpoint, {}, {
         params: {
           client_id: process.env.CLIENT_ID,
           client_secret: process.env.CLIENT_SECRET,
-          code: code
+          code
         },
         headers: {
           'content-type': 'text/json',
           'Accept': 'application/json'
         }
       })
-    console.log(response.data);
-    if (response.data?.access_token) {
-      await Auth.storeToken(response.data?.token_type + ' ' + response.data?.access_token);
-      fun();
+      if (response.data?.access_token) {
+        await Auth.storeToken(response.data?.token_type + ' ' + response.data?.access_token);
+        getUserDetails();
+      }
+    } catch (e) {
+      const error = e as AxiosError;
+      console.log(error.message);
     }
     
   }
-
-  React.useEffect(() => {
-    if (response?.type === 'success') {
-      const { code } = response.params;
-      getAccessToken(code);
-    }
-  }, [response]);
 
   return (
     <Button

@@ -1,10 +1,13 @@
 import * as SecureStore from 'expo-secure-store';
 
+import HTTP from '../api/httpClient'
+
 const key = "accessToken"
 
 const storeToken = async (accessToken: string) => {
   try {
     await SecureStore.setItemAsync(key, accessToken);
+    HTTP.setToken(accessToken);
   } catch (error) {
     console.log('Error storing the access token', error);
   }
