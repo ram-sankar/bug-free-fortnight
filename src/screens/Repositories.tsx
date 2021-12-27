@@ -4,32 +4,20 @@ import { NavigationContext } from '@react-navigation/native';
 
 import AuthContext from "../auth/context"
 import AppButton from "../components/Button";
-import useAuth from './../auth/useAuth';
 
-function Home() {
-  const auth = useAuth();
-  const navigation = useContext(NavigationContext);
+function Repositories() {
   const { user } = useContext(AuthContext);
   return (
       <View style={styles.container}>
-        <Image
-          source={{uri: user?.image}}
-          style={styles.image}
-        />
         <Text style={styles.userName}>{user?.name}</Text>
         <Text style={styles.email}>{user?.email}</Text>
-        <View style={styles.buttonContainer}>
-          <AppButton title='Repositories' style={styles.logoutButton} onPress={() => navigation?.navigate('repositories')} />
-          <AppButton title='Logout' style={styles.logoutButton} onPress={auth.logOut} />
-        </View>
       </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    marginTop: '20%'
+    alignItems: 'center'
   },
   image: {
     width: 200,
@@ -53,4 +41,4 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   }
 });
-export default Home;
+export default Repositories;
