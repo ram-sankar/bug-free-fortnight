@@ -6,10 +6,8 @@ import authStorage from "./storage";
 const useAuth = () => {
   const { user, setUser } = useContext(AuthContext);
 
-  const logIn = () => {
-    const userData = authStorage.getUser();
-    console.log(userData);
-
+  const logIn = async () => {
+    const userData = await authStorage.getUser();
     setUser(userData);
   }
 

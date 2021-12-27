@@ -64,9 +64,8 @@ export default function Login() {
   const getUserDetails = async () => {
     try {
       const res = await HTTP.get('/user');
-      console.log(res.data);
-      const { name, login, email } = res.data;
-      const userDetails: UserDetails = {name, userName: login, email}
+      const { name, login, email, avatar_url } = res.data;
+      const userDetails: UserDetails = {name, userName: login, email, image: avatar_url}
       await Auth.storeUser(userDetails);
       auth.logIn();
     } catch (e) {

@@ -33,8 +33,6 @@ const removeToken = async () => {
 }
 
 const storeUser = async (userDetails: UserDetails) => {
-  console.log('userDetails', userDetails);
-
   try {
     return await SecureStore.setItemAsync(user, JSON.stringify(userDetails));
   } catch (error) {
