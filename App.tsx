@@ -4,34 +4,32 @@ import { Text } from 'react-native';
 import { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 
-import HTTP from './src/api/httpClient';
-import Home from './src/screens/Home';
 import AuthNavigator from './src/Navigator/AuthNavigator';
 import AppNavigator from './src/Navigator/AppNavigator';
+import storage from './src/auth/storage';
+import AuthContext from "./src/auth/context";
+import { UserDetails } from './src/common/model/user';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserDetails>();
 
   useEffect(()=>{
-    getUserDetails();
+    restoreUser();
   },[])
 
-  const getUserDetails = async () => {
-    try {
-      const res = await HTTP.get('/user');
-      console.log(res.data);
-      setIsUserLoggedIn(true);
-      console.log('res.data');
-    } catch (e) {
-      const error = e as AxiosError;
-      console.log(error.message);
-    }
+  console.log(user);
+
+  const restoreUser = async () => {
+    const userData = await storage.getUser()
+    if(userData) setUser(userData);
   }
   
  return (
-   <NavigationContainer fallback={<Text>Loading...</Text>}>
-      {isUserLoggedIn ? <AppNavigator /> : <AuthNavigator /> }
-   </NavigationContainer>
+    <AuthContext.Provider value={{user, setUser}}>
+      <NavigationContainer fallback={<Text>Loading...</Text>}>
+        {user?.name ? <AppNavigator /> : <AuthNavigator /> }
+    </NavigationContainer>
+   </AuthContext.Provider>
  );
 }
